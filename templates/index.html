@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iDictionary</title>
+    <!-- CSS only -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
+      crossorigin="anonymous">
+    <!-- JavaScript Bundle with Popper -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
+      crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.1.js"
+      integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+      crossorigin="anonymous"></script>
+    <link rel="shortcut icon" href="../static/icon.png" type="image/x-icon"
+      sizes="25x25">
+    <link rel="stylesheet" href="../static/css.css">
+  </head>
+  <script>
+  let words = {{words | tojson}}
+  let word_list = [];
+  for (let i = 0; i < words.length; i++) {
+  word_list.push(words[i].word)
+  }
+  
+function find_word() {
+  let word = $('#input-word').val().toLowerCase().trim();
+  if (!word) {
+    alert('Please type a word');
+    return;
+  }
+  if (word_list.includes(word)) {
+    let row = $(`#word-${word}`);
+    row.addClass('highlight');
+    row.siblings().removeClass('highlight');
+    row[0].scrollIntoView();
+  } else {
+    window.location.href = `/detail/${word}?status_give=new`;
+  }
+}
+  </script>
+  <body>
+    <div class="wrap">
+      <div class="banner" onclick="window.location.href= '/'">
+      </div>
+
+      <div class="search-box justify-content-center d-flex">
+        <input id="input-word" class="form-control" style="margin-right:
+          0.5rem;">
+        <button class="btn btn-light" onclick="find_word()">Find</button>
+      </div>
+      <table class="table">
+        <thead class="thead-light">
+          <tr>
+            <th scope="col" style="width: 30%">Word</th>
+            <th scope="col">Definition</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-box">
+          {% for word in words %}
+          <tr id="word-{{word.word}}">
+            <td>
+              <a href="/detail/{{word.word}}?status_give=old">
+                {{word.word}}
+              </a>
+            </td>
+            <td><a href="/detail/{{word.word}}?status_give=old">{{word.definition}}></a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <!-- footer -->
+    <div class="footer">
+      <p class="text-center">&copy;
+        Copyright 2022 by iDictionary. All Rights Reserved.</p>
+    </div>
+    <!-- akhir footer -->
+  </body>
+</html>

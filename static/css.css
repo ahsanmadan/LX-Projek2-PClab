@@ -1,0 +1,145 @@
+.banner {
+  width: 100%;
+  height: 200px;
+  background-color: #2f1850;
+  background-image: url(../static/logo.png);
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+.wrap {
+  background-color: #dbccf0;
+  min-height: 100vh;
+  padding-bottom: 50px;
+}
+
+.container {
+  width: 80%;
+  max-width: 800px;
+  margin: 30px auto;
+  padding: 20px;
+  background-color: white;
+  border: solid 1px gray;
+  border-radius: 10px;
+}
+
+span.example {
+  color: gray;
+  font-size: 14px;
+}
+
+.btn-sparta {
+  color: white;
+  background-color: #2f1850;
+  border: #2f1850 1px solid;
+  border-radius: 5px;
+}
+
+.btn-sparta:hover {
+  color: white;
+  background-color: #1b0e2e;
+  border-color: #1b0e2e;
+  border-radius: 5px;
+}
+
+.btn-sparta-outline {
+  color: black;
+  background-color: transparent;
+  background-image: none;
+  border: #2f1850 1px solid;
+}
+
+.btn-sparta-outline:hover {
+  color: white;
+  background-color: #2f1850;
+  border: #2f1850 1px solid;
+}
+
+.footer {
+  width: 100%;
+  height: 50px;
+  background-color: #2f1850;
+  color: white;
+  text-align: center;
+  line-height: 50px;
+}
+
+.search-box {
+  width: 70%;
+  margin: 50px auto;
+  max-width: 700px;
+}
+
+.table {
+  width: 80%;
+  max-width: 800px;
+  margin: auto;
+  table-layout: fixed;
+}
+
+.table th {
+  border-top-style: none;
+}
+
+td {
+  background-color: white;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+td>a,
+a:visited,
+a:hover,
+a:active {
+  color: black;
+}
+
+thead:first-child tr:first-child th:first-child {
+  border-radius: 10px 0 0 0;
+}
+
+thead:first-child tr:first-child th:last-child {
+  border-radius: 0 10px 0 0;
+}
+
+tbody:last-child tr:last-child td:first-child {
+  border-radius: 0 0 0 10px;
+}
+
+tbody:last-child tr:last-child td:last-child {
+  border-radius: 0 0 10px 0;
+}
+
+tr.highlight>td {
+  background-color: #211138;
+  color: white;
+}
+
+tr.highlight a {
+  color: white;
+}
+
+tr a {
+  text-decoration: none;
+}
+
+tr a:hover {
+  color: #331a57;
+}
+
+.btn-outline-asan {
+  background-color: white;
+  color: #2f1850;
+  border: 1px solid #2f1850;
+  border-radius: 6px;
+}
+
+.btn-outline-asan:hover {
+  background-color: #2f1850;
+  color: white;
+  border: 1px solid #2f1850;
+  border-radius: 6px;
+}

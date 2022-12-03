@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>iDictionary - {{ word }}</title>
+  <!-- CSS only -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+  <!-- JavaScript Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
+    crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+    crossorigin="anonymous"></script>
+
+  <link rel="shortcut icon" href="../static/icon.png" type="image/x-icon" sizes="25x25">
+  <link rel="stylesheet" href="../static/css.css">
+</head>
+<script>
+  let word = '{{ word }}'
+
+  function save_word() {
+    let defs = {{ definitions | tojson
+  }};
+
+  for (let i = 0; i < defs.length; i++) {
+    let def = defs[i];
+    let category = def.fl;
+    let shortdef = def.shortdef[0];
+    let date = def.date;
+
+    defs[i] = {
+      category: category,
+      shortdef: shortdef,
+      date: date,
+    };
+  }
+
+  let data = {
+    word_give: word,
+    definitions_give: defs,
+  };
+  $.ajax({
+    type: 'POST',
+    url: '/api/save_word',
+    data: JSON.stringify(data),
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    success: function (response) {
+      if (response.result === 'success') {
+        alert(response.msg);
+        window.location.href = `/detail/${word}?status_give=old`;
+      } else {
+        alert('Something went wrong...');
+      }
+    }
+  });
+      }
+
+  function delete_word() {
+    $.ajax({
+      type: 'POST',
+      url: '/api/delete_word',
+      data: {
+        word_give: word,
+      },
+      success: function (response) {
+        if (response.result === 'success') {
+          alert(response.msg);
+          window.location.href = `/detail/${word}?status_give=new`;
+        } else {
+          alert('Something went wrong...');
+        }
+      }
+    });
+  }
+
+  // Bagian Sentence
+  function get_examples() {
+    let container = $("#example-list").empty()
+    $.ajax({
+      type: "GET",
+      url: `/api/get_exs?word_give=${word}`,
+      data: {},
+      success: function (response) {
+        let examples = response.examples;
+        let temp_html = "";
+        for (i = 0; i < examples.length; i++) {
+          let example = examples[i];
+          let id = example.id;
+          let sentence = example.example;
+          temp_html += `<li>
+              <p>${sentence}</p><button class="btn-sparta btn-sm" onclick="delete_ex('${id}')">Delete</button>
+            </li>`;
+        }
+        $("#example-list").append(temp_html);
+      }
+    });
+  }
+
+  function add_ex() {
+    let example = $("#new-example").val();
+    $.ajax({
+      type: "POST",
+      url: `/api/save_ex`,
+      data: {
+        example: example,
+        word: word,
+      },
+      success: function (response) {
+        console.log(response)
+        alert(response.msg);
+        get_examples()
+
+      }
+    })
+  }
+
+  function delete_ex(id) {
+    $.ajax({
+      type: "POST",
+      url: `/api/delete_ex`,
+      data: {
+        word: word,
+        id: id,
+      },
+      success: function (response) {
+        alert(response.msg);
+        get_examples();
+      }
+    });
+  }
+
+  $(document).ready(function () {
+    get_examples()
+  })
+</script>
+
+<body>
+  <div class="wrap">
+    <div class="banner" onclick="window.location.href= '/'">
+    </div>
+
+    <<div class="container a">
+      <div class="d-flex justify-content-between align-items-end">
+        <div>
+          <h1 id="word" style="display: inline">{{ word }}</h1>
+        </div>
+      </div>
+      <hr />
+      <div id="definitons">
+        {% for def in definitions %}
+        {% set category = def.fl %}
+        {% set shortdef = def.shortdef[0] %}
+        {% set date = def.date %}
+        <div style="padding: 10px">
+          <i>{{category}}</i>
+          <br />
+          {{shortdef}}
+          <br />
+          <span class="example">{{date}}</span>
+        </div>
+        {% endfor %}
+        <hr />
+        <!-- Bagian Save,Delete and back -->
+        <button class="btn btn-sparta btn-lg" onclick="window.location.href=
+            '/'"">Back</button>
+          {% if status == 'new' %}
+          <button id=" btn-save" onclick="save_word()" class="btn
+            btn-sparta-outline btn-lg">
+          Save
+        </button>
+        {% else %}
+        <button id="btn-delete" onclick="delete_word()" class="btn
+            btn-sparta btn-lg">
+          Delete
+        </button>
+
+        <!-- bagian example -->
+        <div id="examples" class="container">
+          <h3 style="text-align: center; margin-bottom: 1rem">
+            Write your own sentences!
+          </h3>
+          <ul id="example-list">
+
+          </ul>
+          <div class="d-flex justify-content-between" style="margin-left: 20px">
+            <input id="new-example" class="form-control form-control-sm" style="margin-right: 0.5rem" />
+            <button class="btn btn-outline-asan btn-sm" onclick="add_ex()">
+              add
+            </button>
+          </div>
+        </div>
+
+        {% endif %}
+      </div>
+  </div>
+  </div>
+  <!-- footer -->
+  <div class="footer">
+    <p class="text-center">&copy;
+      Copyright 2022 by iDictionary. All Rights Reserved.</p>
+  </div>
+  <!-- akhir footer -->
+</body>
+
+</html>
